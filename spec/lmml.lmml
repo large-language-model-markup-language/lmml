@@ -44,7 +44,7 @@ and why it exists, refer to the sections below.
 .begin_conversion_prompts
     .description: These prompts are highly focused, allowing LLMs a much better chance in succeeding.
     .begin_conversion_to_lmml
-        .description: Use these prompts for the "entry ramp" when data must be passed from a strict format into an LLM (it helps to stay ‘native LMML’ for all communications to LLMs).
+        .description: Don't use an LLM to convert data to LMML. Use standard programming techniques to produce LMML, but that said, you can ask an LLM to do this work easily enough.
         .json_to_lmml: Convert the following JSON into LMML. Use the JSON keys as semantic tag names.
         .yaml_to_lmml: Convert the following YAML into LMML. Use the YAML keys as semantic tag names. 
     .end_conversion_to_lmml
