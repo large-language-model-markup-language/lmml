@@ -1,0 +1,178 @@
+.begin_lmml_document
+.document_meta
+.title: Large Language Model Markup Language, LMML By example
+.subtitle: A Semantic Text Markup Language for LLMs and Humans
+.author: Bernie Habermeier
+.date: 2025-06-14
+.format: LMML v1.1
+.end_document_meta
+
+
+.begin_explanation
+This document serves as its own example. It is an LMML file that describes
+LMML's primary purpose: to structure metadata in a way that is natural for
+Large Language Models.  For a deeper understanding of LMML's philosophy
+and why it exists, refer to the sections below.
+.end_explanation
+
+
+.begin_lmml_philosophy
+.principle: A Language Designed for its Primary User
+.description: Tools should be designed for their primary user. For traditional data interchange, the user is a deterministic, syntactic parser.  For modern AI systems, the user is a probabilistic, semantic LLM. LMML is built for the LLM.  It is not a replacement for JSON or YAML; it is a more suitable tool for communication with and between LLMs. 
+.principle: Embrace the LLM as the Parser
+.description: The fact that LMML cannot be parsed by a simple, deterministic library is a feature, not a bug.  It frees the system from the syntactic brittleness that causes LLMs to frequently fail when generating formats like JSON (e.g., trailing commas, unescaped quotes).  In an LLM-native workflow, you already have the world's most advanced semantic parser at your disposal—the LLM itself. 
+.principle: The "Native Domain" and the "Exit Ramp"
+.description: LMML is the native language for tasks occurring inside the LLM domain, such as chaining prompts or refining content.  When data must leave this domain to interact with a traditional API or database, you use a final, highly-focused LLM task as an "exit ramp" to perfectly translate the mature LMML data into a strict format like JSON.  This is more reliable than forcing every intermediate LLM in a chain to speak a foreign, syntactically-brittle language. 
+.end_lmml_philosophy
+
+
+.begin_instruction_how_to_read_and_write_lmml
+.point: LMML tags start with a period (.) on a new line; indentation indicates semantic nesting. Nesting is allowed, particularly within `.begin_semantic_tag` and `.end_semantic_tag` pairs. 
+.point: No escaping is allowed or necessary. LMML relies on semantic inference: readers (humans or LLMs) infer meaning from context—whether structured data, content, or free text.  An LLM attempting to use escape sequences (e.g., backticks, HEREDOC) indicates a misunderstanding of LMML's design intent to inherently separate content.
+.point: Asset content (e.g., code, large text blocks) MUST retain its original whitespace and indentation. Re-indenting asset content to align with LMML tags is NOT allowed, particularly for CRUD operations.  For very large LMML documents with extensive asset content, LMML tag indentations can be omitted. 
+.point: LMML documents may have text inside and outside of LMML blocks.  Content outside LMML tags provides general context or explanations. A chat agent, for instance, might use this 'main channel' for conversation, switching to LMML tags for structured data like code. 
+.point: Avoid semantically confusing LMML.  Determining semantic confusion requires a human or capable LLM/AI system to interpret tag meaning. 
+.end_instruction_how_to_read_and_write_lmml
+
+
+.begin_llm_to_llm_conversation
+    .major_pain_point: LLMs are not compilers; when forced to generate strict formats like JSON or YAML, they often make small syntactic mistakes that cause catastrophic failures in downstream parsers.  The primary value of JSON/YAML—validation by strict, fast parsers—is irrelevant to an LLM, which does not use these tools to understand the data it receives. 
+    .perfect_solution: LMML is inherently robust to common generation flaws. Its reliance on semantic context means the LLM's intent is preserved even if the formatting isn't perfect.  LMML eliminates an entire class of errors by removing the need for content escaping.  This is especially critical when working with source code or text containing special characters. 
+.end_llm_to_llm_conversation
+
+
+.begin_conversion_prompts
+    .description: These prompts are highly focused, allowing LLMs a much better chance in succeeding.
+    .begin_conversion_to_lmml
+        .description: Use these prompts for the "entry ramp" when data must be passed from a strict format into an LLM (it helps to stay ‘native LMML’ for all communications to LLMs).
+        .json_to_lmml: Convert the following JSON into LMML. Use the JSON keys as semantic tag names.
+        .yaml_to_lmml: Convert the following YAML into LMML. Use the YAML keys as semantic tag names. 
+    .end_conversion_to_lmml
+    .begin_conversion_from_lmml
+        .description: Use these prompts for the "exit ramp" when data must be passed to a system requiring a strict format.
+        .lmml_to_json: Convert the following LMML document into a valid JSON object.
+        .lmml_to_yaml: Convert the following LMML document into a valid YAML object.
+    .end_conversion_from_lmml
+.end_conversion_prompts
+
+
+.begin_example_section
+.example_nested_items
+    .item: this is the first item in the list. 
+    .begin_item
+This is a second item in the list, and we're not indent-aligning it with the
+LMML tags because when dealing with content, you don't want to spend any
+effort at all trying to line it up with tag hierarchy... and that's OK! 
+    .end_item
+    .item: this is the third item in the list, and it's a one-liner just
+like the first item
+.end_example_nested_items
+
+
+.begin_structured_data_example
+    .begin_description
+        .begin_important_aspects
+            .trust: low
+            .temperature: 0.2
+            .performance: low
+        .end_important_aspects
+        .begin_tags
+            .color: green 
+            .hungry: no
+            .salary: non-negotiable
+            .gender: unknown
+        .end_tags
+    .end_description
+    .funky: very much so, yes, I'd say
+    .will_it_blend: yes
+    .language: C99
+    .semantic_tags: awesome
+.end_structured_data_example
+
+
+.begin_code_examples_for_lmml_by_example_document
+    .begin_example_1
+        .begin_notes
+Hierarchical LMML tag indenting is used, with asset content retaining its original
+indentation from column zero for simpler processing. 
+        .end_notes
+        .begin_asset tmp/lmml_by_example/fun.c
+#include <stdio.h>
+
+
+int main() {
+    for (int i = 0; i < 3; i++) {
+        printf("Outer loop: %d\n", i); 
+        for (int j = 0; j < 2; j++) {
+            printf("  Inner loop: %d\n", j); 
+            if (i == j) {
+                printf("    i and j are equal\n"); 
+                if (i == 1) {
+                    printf("      And the value is 1\n"); 
+                }
+            }
+        }
+    }
+    return 0; 
+}
+        .end_asset tmp/lmml_by_example/fun.c
+    .end_example_1
+
+
+    .begin_example_2
+    .begin_notes
+LMML tags here are flat, which is also valid.  Asset content remains naturally
+indented from column zero.
+    .end_notes
+    .begin_asset tmp/lmml_by_example/animal.ts
+class Animal {
+    constructor(private name: string) {}
+
+
+    public makeSound(sound: string): void {
+        if (this.name) {
+            console.log(`${this.name} makes a sound.`); 
+            if (sound) {
+                console.log(`Specifically, it says "${sound}".`); 
+                if (sound.length > 5) {
+                    console.log("That is a long sound!"); 
+                }
+            }
+        }
+    }
+}
+
+
+const cat = new Animal("Whiskers"); 
+cat.makeSound("Meow");
+
+
+    .end_asset tmp/lmml_by_example.ts
+    .end_example_2
+
+
+    .begin_example: LMML_CRUD_Example_3
+    .begin_notes
+This example, taken from the CRUD guide, shows an update operation where the
+target fragment of code is deeply indented.  The LMML parser will understand
+that the original indentation of the code fragment must be preserved. 
+    .end_notes
+
+
+    .begin_update_asset_fragment: src/data_processor.py
+    .descriptor: in the 'parse_data' function; the block starting with the 'if' statement and ending with the 'except' block. 
+        if not isinstance(data_string, str):
+            print("Error: Input must be a string.")
+            return None
+        try:
+            return json.loads(data_string)
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
+            return None 
+    .end_update_asset_fragment: src/data_processor.py
+    .end_example: LMML_CRUD_Example_3
+.end_code_examples_for_lmml_by_example_docuemnt
+
+
+.end_example_section
+.end_lmml_document
