@@ -6,7 +6,7 @@ Because LMML is parsed based on semantic context, a traditional parser can't be 
 ## Example flow of a prompt that includes JSON
 It's true that LLMs have not problems reading strict structured formats like JSON, but the reason to first convert all structured data to LMML is to reinforce that we're talking LMML here. The more modalities of data representation we use, the more likely it is that your LLM will shift gears midway through its own response. We want to avoid this, so we lead by example by providing LMML for as much as we can. The hope is that LLMs will be able to infer enough context to not slip into using (JSON)
 
-{Prompt, JSON} --> [trivial converter program] --> {Prompt, LMML} --> [thinking LLM(s)] --> {Response, LMML} --> [converter LLM] --> {Response, JSON}
+{Prompt, JSON} -> [converter code] -> {Prompt, LMML} -> [thinking LLM(s)] -> {Response, LMML} -> [converter LLM] --> {Response, JSON}
 
 ## Schema Definitions
 💡It's a good idea to include a schema definition (even in LMML) if you're expecting certain fields and structure to be present in your response.
